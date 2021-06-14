@@ -1,0 +1,305 @@
+---
+title: "Overview of analysis workflows and file formats"
+subtitle: "Beginners session - TLUK Ribosome Profiling Workshop"
+author: "Isabel Birds & Julie Aspden"
+date: "02/07/2021"
+output: 
+  ioslides_presentation:
+        widescreen: true
+        transition: slower
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+<style>
+h2 { 
+ color: black;		
+}
+h3 { 
+ color: black;		
+}
+</style>
+
+
+## Discussion points:
+
+* File types
+* Data needed
+* Overview of Ribo-seq analysis workflows
+
+# File types
+
+## FASTA
+
+* DNA, RNA, and protein sequences are stored in FASTA format.
+* This could be a single transcript, or an entire chromosome.
+* FASTA files generally have the extension .fa or .fasta (eg file1.fa).
+* Multiple sequence alignments are also stored in FASTA format, with dashes (-) used to indicate gaps in the alignment.
+
+Example:
+```{bash, eval = FALSE}
+>ENST00000607096.1|ENSG00000284332.1|-|-|MIR1302-2-201|MIR1302-2|138|miRNA|
+GGATGCCCAGCTAGTTTGAATTTTAGATAAACAACGAATAATTTCGTAGCATAAATATGT
+CCCAAGCTTAGTTTGGGACATACTTATGCTAAAAAACATTATTGGTTGTTTATCTGAGAT
+TCAGAATTAAGCATTTTA
+```
+
+The Sequence ID must be unique, and not contain spaces.
+
+## FASTQ
+
+* FASTQ files contain sequencing data, and corresponding quality scores.
+* RNA-seq and ribo-seq files will be in FASTQ format.
+* Encoding used for quality scores can vary.
+
+## FASTQ
+
+Each sequence in a FASTQ file contains 4 lines:
+```{bash, eval = FALSE}
+LINE 1: @Sequence_ID:optional description of sequencing run
+LINE 2: Raw sequence letters (A,C,T,G,N)
+LINE 3: + (a separator)
+LINE 4: Quality scores of sequence
+```
+
+Example:
+```{bash, eval = FALSE}
+@NB501623:178:HJLC2BGX5:1:11101:5397:1056 1:N:0:AGTCAA
+CGGTCNGTGAAGAGTCGAACGTGCTCTGCNGNAGATCGGAAGAGCACACNTCTGANCTCNAGTCACANTNANATNT
++
+AAAAA#EEEEEEEEE<E/EEEEEEEE/EE#/#EE/EEEE/EE<AE/EEE#EEAE/#EAE#EEAE/EA#E#E#EE#/
+```
+
+## fai
+
+* fai files are indexes for an accompanying fasta or fastq file.
+* These allow efficient access to regions within sequences.
+* fai files contain five tab-delimited columns for FASTA, and six for FASTQ
+
+```{bash, eval = FALSE}
+NAME  LENGTH  OFFSET  LINEBASES  LINEWIDTH   QUALOFFSET
+```
+
+## fai 
+
+```{bash, eval = FALSE}
+NAME  LENGTH  OFFSET  LINEBASES  LINEWIDTH   QUALOFFSET
+```
+
+Where:
+
+* <b>NAME</b> - sequence name
+* <b>LENGTH</b> -	length of the reference sequence, in bases
+* <b>OFFSET</b> -	Offset from the first base of the sequence
+* <b>LINEBASES</b>	- The number of bases on each line of the sequence
+* <b>LINEWIDTH</b>	- The number of bytes in each line, including the newline
+* <b>QUALOFFSET</b> -	Offset of sequence's first quality score
+
+## fai 
+
+```{bash, eval = FALSE}
+NAME  LENGTH  OFFSET  LINEBASES  LINEWIDTH   QUALOFFSET
+```
+
+Example: GRCh38.primary_assembly.genome.fa.fai
+
+```{bash, eval = FALSE}
+chr1	248956422	8	60	61
+chr2	242193529	253105712	60	61
+chr3	198295559	499335808	60	61
+```
+
+## GFF3
+
+* General Feature Format (GFF) files are used to describe features of sequences.
+* GFF3 is now the standard - GFF2 is depreciated.
+* GFF3 files contain 9 tab-delimited columns.
+* Gene Transfer Format (GTF) files are similar to GFF3 
+
+```{bash, eval = FALSE}
+seqid   source   type   start   end   score   strand   phase   attributes
+```
+
+## GFF3
+
+```{bash, eval = FALSE}
+seqid   source   type   start   end   score   strand   phase   attributes
+```
+
+Where:
+
+* <b>seqid</b> - the name of the sequence containing the feature
+* <b>source</b>  - source of the feature (a program or project)
+* <b>type</b>   - feature type (CDS, gene, exon)
+* <b>start</b>  - start position (1-base offset)
+* <b>end</b>  - end position (1-base offset)
+* <b>score</b> - varies
+* <b>strand</b>  - +, -, ?, or .
+* <b>phase</b> - 0,1,2, or . - where the first codon starts
+* <b>attributes</b> - extra information.
+
+<div class="notes">
+E-values for sequence similarity features,
+P-values for ab initio gene prediction features.
+The phase is one of the integers 0, 1, or 2, indicating the number of bases forward from the start of the current CDS feature the next codon begins. 
+</div>
+
+## GFF3
+
+```{bash, eval = FALSE}
+seqid   source   type   start   end   score   strand   phase   attributes
+```
+
+Example:
+
+```{bash, eval = FALSE}
+##gff-version 3.1.26
+##sequence-region ctg123 1 1497228
+ctg123 . gene            1000  9000  .  +  .  ID=gene00001;Name=EDEN
+ctg123 . TF_binding_site 1000  1012  .  +  .  ID=tfbs00001;Parent=gene00001
+ctg123 . mRNA            1050  9000  .  +  .  ID=mRNA00001;Parent=gene00001;Name=EDEN.1
+```
+
+The first line is a comment that defines the version.
+
+
+## Coordinate systems
+
+* Files are often 1-based or 0-based.
+* 1-based - numbers nucleotides directly.
+* 0-based - numbers between nucleotides.
+
+<img src="images/Bases_figure.jpg" height="250px"/>
+
+## Coordinate systems
+
+<img src="images/Bases_figure.jpg" height="250px"/>
+
+    Seq       1-based     0-based      
+----------  ----------  ----------
+   ATG        chr1:1-3   chr1:0-3 	
+   C          chr1:7-7 	 chr1:6-7 
+
+## Coordinate systems
+
+### 1-based
+* GFF
+* SAM
+
+### 0-based
+* BED
+* BAM
+
+
+## SAM
+
+* Sequence Alignment Map (SAM) files contain sequence reads, and alignment data that links them to a reference sequence.
+* Used for visualing sequences in genome browsers.
+
+## BAM
+
+* BAM files are binary versions of SAM files.
+* Not human readable, but much smaller files.
+* .bai - index as in .fai
+
+## BED
+
+* BED files allow users to define how annotation tracks are displayed
+* Upto 12 tab-delimited columns, only the first 3 are required.
+
+IMAGE OF DATA TRACK FROM GENOME BROSWER
+
+```{bash, eval = FALSE}
+chrom chromStart chromEnd name strand thickStart thickEnd itemRgb blockCount 
+blockSizes blockStarts
+```
+
+## BED
+
+Required fields:
+
+* <b>chrom</b> - Name of the chromosome or scaffold
+* <b>chromStart</b> - Start position of chromosome (0-based)
+* <b>chromEnd</b> - End postition of chromosome
+
+## BED
+
+Optional fields
+
+* <b>name</b> - Name of the line
+* <b>score</b> - between 0-1000, determines grayness of track
+* <b>strand</b> - + or - 
+* <b>thickStart</b> - start position of thick blocks (start codon)
+* <b>thickEnd</b> - end position of thick blocks
+* <b>itemRgb</b> - colour of the data in the line
+* <b>blockCount</b> - number of exons (blocks) in the line
+* <b>blockSizes</b> - comma-separated list of block sizes
+* <b>blockStarts</b> - comma-separated list of block starts relative to chromStart
+
+# Workflow overview
+
+## Workflow
+
+To do - make flow chart
+
+Raw data -> Quality check -> Adapter Removal -> Quality filter -> Contaminant removal -> Alignment -> Read length selection -> Translation analysis
+
+## Quality check
+
+Input fastq, output fastq and quality check results
+
+## Adapter Removal 
+
+Input fastq and adaptor sequence, output fastq
+
+## Quality filter 
+
+Input fastq, output fastq
+
+## Contaminant removal 
+
+Input fastq and fasta, output fastq
+
+Data here - need rRNA and tRNA
+Where from?
+FASTA files.
+
+## Alignment 
+
+Input fastq, output SAM
+SAM to BAM
+aligned/sorted bam
+
+## Read length selection 
+
+## Translation analysis
+
+
+## Thanks!
+### Any questions?
+
+
+![The Aspden Lab](images/group_photo.jpeg){#id .class width=50% height=50%}
+
+
+
+# Extras
+
+## Compressing files
+
+* zip 
+* gzip
+* tar ball
+
+## Asking for help
+
+* Biostars
+* stackoverflow
+* communties
+* FAQs
+
+## md5sum
+
+* Checking your files have transferred without error - md5sum
+
