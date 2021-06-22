@@ -248,7 +248,7 @@ TCAGAATTAAGCATTTTA</pre>
 
 </article></slide><slide class=""><hgroup><h2>FASTA files in Ribo-seq</h2></hgroup><article  id="fasta-files-in-ribo-seq">
 
-<p>Highlight - contaminent removal, alignment</p>
+<p>Highlight - contaminent removal, alignment (reference genome)</p>
 
 <p><em>Drosophila melanogaster</em> rRNA:</p>
 
@@ -260,9 +260,19 @@ GTTAGTACTTAGATGGGGGACCGCTTGGGAACACCGCGTGTTGTTGGCCT</pre>
 
 <ul>
 <li>FASTQ files contain sequencing data, and corresponding quality scores.</li>
-<li>RNA-seq and ribo-seq files will be in FASTQ format.</li>
-<li>Encoding used for quality scores can vary.</li>
+<li>Phred score/Q score - measure the probability a base is called incorrectly.
+
+<ul>
+<li>Q-score: Q = -10log<sub>10</sub>(e)</li>
+<li>where e is the estimated probablitiy of the base call being wrong</li>
+<li>Q = 20 - error rate 1 in 100.</li>
+<li>Q = 30 - eror rate 1 in 1000.</li>
+</ul></li>
+<li>Encoding used for quality scores can vary - eg Phred +33, using ASCII characters to represent numerical scores.</li>
 </ul>
+
+<p><font size ="3"><span class="cite">(<span>
+“NGS Sequencing Technology and File Formats,”</span> n.d.)</span></font></p>
 
 </article></slide><slide class=""><hgroup><h2>FASTQ</h2></hgroup><article  id="fastq-1">
 
@@ -280,9 +290,11 @@ CGGTCNGTGAAGAGTCGAACGTGCTCTGCNGNAGATCGGAAGAGCACACNTCTGANCTCNAGTCACANTNANATNT
 +
 AAAAA#EEEEEEEEE&lt;E/EEEEEEEE/EE#/#EE/EEEE/EE&lt;AE/EEE#EEAE/#EAE#EEAE/EA#E#E#EE#/</pre>
 
+<p>A = 32, E = 36, # = 35, &lt; = 27</p>
+
 </article></slide><slide class=""><hgroup><h2>FASTQ files in Ribo-seq</h2></hgroup><article  id="fastq-files-in-ribo-seq">
 
-<p>Highlight - raw data util alignments.</p>
+<p>Highlight - raw data util alignments. RNA-seq and Ribo-seq data. * Single-end seq - one fastq per sample (R1). * Paired-end seq - two fastqs per sample (R1 and R2).</p>
 
 </article></slide><slide class=""><hgroup><h2>fai</h2></hgroup><article  id="fai">
 
@@ -364,9 +376,11 @@ ctg123 . mRNA            1050  9000  .  +  .  ID=mRNA00001;Parent=gene00001;Name
 
 <p>The first line is a comment that defines the version.</p>
 
-<h3>GFF3/GTF files in ribo-seq</h3>
+<p><font size ="3"><span class="cite">(Stein 2020)</span></font></p>
 
-<p>alignment</p>
+</article></slide><slide class=""><hgroup><h2>GFF3/GTF files in ribo-seq</h2></hgroup><article  id="gff3gtf-files-in-ribo-seq">
+
+<p>alignment - reference genome</p>
 
 </article></slide><slide class=""><hgroup><h2>Coordinate systems</h2></hgroup><article  id="coordinate-systems">
 
@@ -400,6 +414,8 @@ ctg123 . mRNA            1050  9000  .  +  .  ID=mRNA00001;Parent=gene00001;Name
 </tr>
 </table>
 
+<p><font size ="3"><span class="cite">(Griffith 2013)</span></font></p>
+
 </article></slide><slide class=""><hgroup><h2>Coordinate systems</h2></hgroup><article  id="coordinate-systems-2">
 
 <h3>1-based</h3>
@@ -420,23 +436,155 @@ ctg123 . mRNA            1050  9000  .  +  .  ID=mRNA00001;Parent=gene00001;Name
 
 <ul>
 <li>Sequence Alignment Map (SAM) files contain sequence reads, and alignment data that links them to a reference sequence.</li>
-<li>Used for visualing sequences in genome browsers.</li>
+<li>Optional header section, followed by alignment section.</li>
 </ul>
 
-</article></slide><slide class=""><hgroup><h2>SAM files in ribo-seq</h2></hgroup><article  id="sam-files-in-ribo-seq">
+</article></slide><slide class=""><hgroup><h2>SAM - Header section</h2></hgroup><article  id="sam---header-section">
 
-<p>contaminant removal - aligned rRNA/tRNA reads, alignment output</p>
+<p>Example:</p>
 
 <pre class = 'prettyprint lang-bash'>@HD VN:1.0  SO:unsorted
 @SQ SN:gi|158246|gb|M21017.1|DRORGAB    LN:12026
 @SQ SN:gi|174298|gb|M25016.1|DRORR5SEM  LN:120
-@PG ID:bowtie2  PN:bowtie2  VN: CL:&quot;bowtie2-align-s --wrapper basic-0 --threads 6 --trim3 1 -k 1 -x bowtie_indexes/rRNA_fly --passthrough -U Quality_filter_outputs/SRR1548656.qualfilt_output.fastq&quot;
-SRR1548656.34   4   *   0   0   *   *   0   0   TCCCATATTGTCTAGTGGTTAGGATATCCGGC    CCCFFFFFHHHHHJJGIIJJIJJJJIJJJJJJ    YT:Z:UU
-SRR1548656.35   0   gi|158246|gb|M21017.1|DRORGAB   5188    255 38M *   0   0   ATGGGCCTCGTGCTCATCCTGGCAACAGGAACGACCAT  BCCFFFFFGHHHHJJJJJJJJJIGIJJJJIGCHIJJJJ  AS:i:0  XN:i:0  XM:i:0  XO:i:0  XG:i:0  NM:i:0  MD:Z:38 YT:Z:UU
-SRR1548656.36   0   gi|158246|gb|M21017.1|DRORGAB   2873    255 29M *   0   0   TGCTTNGACTACATATGGTTGAGGGTTGT   CCCFF#2AFHHHHJJIJJJJJIJJJHIJJ   AS:i:-1 XN:i:0  XM:i:1  XO:i:0  XG:i:0  NM:i:1  MD:Z:5G23   YT:Z:UU
-SRR1548656.37   0   gi|158246|gb|M21017.1|DRORGAB   839 255 34M *   0   0   ATTAGNGTGCTTAAAGCAGGCTTCAAATGCCTGA  CCCFF#2=DHHHHJJJJJJJJJJJJJJJJJJJJI  AS:i:-1 XN:i:0  XM:i:1  XO:i:0  XG:i:0  NM:i:1  MD:Z:5A28   YT:Z:UU
-SRR1548656.38   0   gi|158246|gb|M21017.1|DRORGAB   1682    255 33M *   0   0   ATTTCNTAGACCGAGAGGTCCGGGTAAACCGCT   CCCFF#4ACFHHHJJJJJJJJJJJHFHIHFHIJ   AS:i:-1 XN:i:0  XM:i:1  XO:i:0  XG:i:0  NM:i:1  MD:Z:5C27   YT:Z:UU
-SRR1548656.39   0   gi|158246|gb|M21017.1|DRORGAB   2723    255 30M *   0   0   ACTCTAAGCGGTGGATCACTCGGCTCATGG  CCCFFFFFGHHHHJIJJJJJJJJJJJJJJJ  AS:i:0  XN:i:0  XM:i:0  XO:i:0  XG:i:0  NM:i:0  MD:Z:30 YT:Z:UU</pre>
+@PG ID:bowtie2  PN:bowtie2  VN: CL:&quot;bowtie2-align-s --wrapper basic-0 --threads 6 
+--trim3 1 -k 1 -x bowtie_indexes/rRNA_fly --passthrough -U 
+Quality_filter_outputs/SRR1548656.qualfilt_output.fastq&quot;</pre>
+
+<p><b>@HD</b>: File level metadata</p>
+
+<ul>
+<li><b>VN</b> - format version</li>
+<li><b>SO</b> - sorting order of alignments</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>SAM - Header section</h2></hgroup><article  id="sam---header-section-1">
+
+<p>Example:</p>
+
+<pre class = 'prettyprint lang-bash'>@HD VN:1.0  SO:unsorted
+@SQ SN:gi|158246|gb|M21017.1|DRORGAB    LN:12026
+@SQ SN:gi|174298|gb|M25016.1|DRORR5SEM  LN:120
+@PG ID:bowtie2  PN:bowtie2  VN: CL:&quot;bowtie2-align-s --wrapper basic-0 --threads 6 
+--trim3 1 -k 1 -x bowtie_indexes/rRNA_fly --passthrough -U 
+Quality_filter_outputs/SRR1548656.qualfilt_output.fastq&quot;</pre>
+
+<p><b>@SQ</b>: Reference sequence metadata</p>
+
+<ul>
+<li><b>SN</b> - reference sequence name</li>
+<li><b>LN</b> - reference sequence length</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>SAM - Header section</h2></hgroup><article  id="sam---header-section-2">
+
+<p>Example:</p>
+
+<pre class = 'prettyprint lang-bash'>@HD VN:1.0  SO:unsorted
+@SQ SN:gi|158246|gb|M21017.1|DRORGAB    LN:12026
+@SQ SN:gi|174298|gb|M25016.1|DRORR5SEM  LN:120
+@PG ID:bowtie2  PN:bowtie2  VN: CL:&quot;bowtie2-align-s --wrapper basic-0 --threads 6 
+--trim3 1 -k 1 -x bowtie_indexes/rRNA_fly --passthrough -U 
+Quality_filter_outputs/SRR1548656.qualfilt_output.fastq&quot;</pre>
+
+<p><b>@RF</b>: Read group - multiple lines allowed</p>
+
+<p><b>@PG</b>: Program</p>
+
+<ul>
+<li><b>ID</b> - program ID</li>
+<li><b>PN</b> - program name</li>
+<li><b>CL</b> - Command line</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>SAM - Alignment section</h2></hgroup><article  id="sam---alignment-section">
+
+<ul>
+<li>tab delimited columns</li>
+<li>11 required columns</li>
+<li>Optional TAGs</li>
+</ul>
+
+<pre class = 'prettyprint lang-bash'>QNAME FLAG RNAME POS MAPQ CIGAR RNEXT PNEXT TLEN SEQ QUAL</pre>
+
+<p>Where:</p>
+
+<ul>
+<li><b>QNAME</b> - query sequence name</li>
+<li><b>FLAG</b> - bitwise flag - lookup code for features of read</li>
+<li><b>RNAME</b> - reference sequence name</li>
+<li><b>POS</b> - leftmost mapping postion (1-based)</li>
+<li><b>MAPQ</b> - mapping quality (how well the read aligned)</li>
+<li><b>CIGAR</b> - cigar string</li>
+</ul>
+
+<aside class='note'><section><p>flag - eg reverse comp, secondary alignment, unmapped.</p></section></aside>
+
+</article></slide><slide class=""><hgroup><h2>CIGAR strings</h2></hgroup><article  id="cigar-strings">
+
+<ul>
+<li>Compact Idiosyncratic Gapped Alignment Report (CIGAR) string</li>
+<li>A shorthand encoding of an entire alignment:
+
+<ul>
+<li>Where the sequence aligns/doesn’t align.</li>
+<li>Deletions</li>
+<li>Insertions</li>
+</ul></li>
+</ul>
+
+<p>Example: position=2, CIGAR=3M2I3M</p>
+
+<pre class = 'prettyprint lang-bash'>AAGTC  TAGAA (ref) 
+  GTCGATAG (query)</pre>
+
+<p>Starting from 2, 3 matches, 2 inserts, 3 matches.</p>
+
+<p><font size ="3"><span class="cite">(Fan 2017)</span></font></p>
+
+</article></slide><slide class=""><hgroup><h2>SAM - Alignment section</h2></hgroup><article  id="sam---alignment-section-1">
+
+<pre class = 'prettyprint lang-bash'>QNAME FLAG RNAME POS MAPQ CIGAR RNEXT PNEXT TLEN SEQ QUAL</pre>
+
+<p>Where:</p>
+
+<ul>
+<li><b>RNEXT</b> - reference name of the next read</li>
+<li><b>PNEXT</b> - position of the next read (1-based)</li>
+<li><b>TLEN</b> - query sequence length - 0 for single segment sequence</li>
+<li><b>SEQ</b> - query sequence</li>
+<li><b>QUAL</b> - query sequence quality</li>
+</ul>
+
+<p><font size ="3"><span class="cite">(The SAM/BAM Format Specification Working Group 2021)</span></font></p>
+
+</article></slide><slide class=""><hgroup><h2>SAM - Alignment section</h2></hgroup><article  id="sam---alignment-section-2">
+
+<h3>TAGs</h3>
+
+<p>Format - TAG : TYPE : VALUE</p>
+
+<p>Examples:</p>
+
+<ul>
+<li>AS:i:score = Alignment score generated by aligner.</li>
+<li>H0:i:count Number of perfect hits.</li>
+</ul>
+
+<p><font size ="3"><span class="cite">(The SAM/BAM Format Specification Working Group 2020)</span></font></p>
+
+</article></slide><slide class=""><hgroup><h2>SAM - Alignment section</h2></hgroup><article  id="sam---alignment-section-3">
+
+<pre class = 'prettyprint lang-bash'>QNAME FLAG RNAME POS MAPQ CIGAR RNEXT PNEXT TLEN SEQ QUAL</pre>
+
+<pre class = 'prettyprint lang-bash'>
+SRR1548656.36   0   gi|158246|gb|M21017.1|DRORGAB   2873    255 29M *   0   0   
+TGCTTNGACTACATATGGTTGAGGGTTGT   CCCFF#2AFHHHHJJIJJJJJIJJJHIJJ   
+AS:i:-1 XN:i:0  XM:i:1  XO:i:0  XG:i:0  NM:i:1  MD:Z:5G23   YT:Z:UU
+</pre>
+
+</article></slide><slide class=""><hgroup><h2>SAM files in ribo-seq</h2></hgroup><article  id="sam-files-in-ribo-seq">
+
+<p>contaminant removal - aligned rRNA/tRNA reads, alignment output</p>
 
 </article></slide><slide class=""><hgroup><h2>BAM</h2></hgroup><article  id="bam">
 
@@ -477,7 +625,7 @@ blockSizes blockStarts</pre>
 <p>Optional fields</p>
 
 <ul>
-<li><b>name</b> - Name of the line</li>
+<li><b>name</b> - Label for the feature</li>
 <li><b>score</b> - between 0-1000, determines grayness of track</li>
 <li><b>strand</b> - + or -</li>
 <li><b>thickStart</b> - start position of thick blocks (start codon)</li>
@@ -488,7 +636,9 @@ blockSizes blockStarts</pre>
 <li><b>blockStarts</b> - comma-separated list of block starts relative to chromStart</li>
 </ul>
 
-<h3>BED files in ribo-seq</h3>
+<p><font size ="3"><span class="cite">(Ensembl 2021)</span></font></p>
+
+</article></slide><slide class=""><hgroup><h2>BED files in ribo-seq</h2></hgroup><article  id="bed-files-in-ribo-seq">
 
 <p>translation analysis</p>
 
@@ -545,15 +695,15 @@ tar -xzvf filename.tar.gz</pre>
 <h3>Online forums:</h3>
 
 <ul>
-<li>Biostars</li>
-<li>stackoverflow</li>
+<li><a href='https://www.biostars.org/' title=''>Biostars</a></li>
+<li><a href='https://stackoverflow.com/' title=''>stackoverflow</a></li>
 </ul>
 
 <h3>Communities:</h3>
 
 <ul>
-<li>R-ladies</li>
-<li>The Turing Way</li>
+<li><a href='https://rladies.org/' title=''>R-ladies</a></li>
+<li><a href='https://the-turing-way.netlify.app/welcome.html' title=''>The Turing Way</a></li>
 </ul>
 
 </article></slide><slide class=""><hgroup><h2>md5sum</h2></hgroup><article  id="md5sum">
@@ -565,7 +715,40 @@ tar -xzvf filename.tar.gz</pre>
 
 <p>Example on mac:</p>
 
-<pre class = 'prettyprint lang-bash'>MD5 (TLUK2021_talk.Rmd) = 01b9630ca402b38d9d50567fa783f92d</pre></article></slide>
+<pre class = 'prettyprint lang-bash'>md5sum TLUK2021_talk.Rmd
+
+MD5 (TLUK2021_talk.Rmd) = 01b9630ca402b38d9d50567fa783f92d</pre>
+
+</article></slide><slide class=""><hgroup><h2>References</h2></hgroup><article  class="unnumbered" id="references">
+
+<div class="references csl-bib-body hanging-indent" id="refs">
+<div class="csl-entry" id="ref-ensembl_bed">
+<p>Ensembl. 2021. <span>
+“BED File Format - Definition and Supported Options.”</span> <a href='https://www.ensembl.org/info/website/upload/bed.html' title=''>https://www.ensembl.org/info/website/upload/bed.html</a>.</p></div>
+
+<div class="csl-entry" id="ref-Cigar_ref">
+<p>Fan, Jean. 2017. <span>
+“Cigar Strings for Dummies.”</span> <a href='https://jef.works/blog/2017/03/28/CIGAR-strings-for-dummies/' title=''>https://jef.works/blog/2017/03/28/CIGAR-strings-for-dummies/</a>.</p></div>
+
+<div class="csl-entry" id="ref-based">
+<p>Griffith, Obi. 2013. <span>
+“Tutorial:cheat Sheet for One-Based Vs Zero-Based Coordinate Systems.”</span> <a href='https://www.biostars.org/p/84686/#290319' title=''>https://www.biostars.org/p/84686/#290319</a>.</p></div>
+
+<div class="csl-entry" id="ref-NGS">
+<p><span>
+“NGS Sequencing Technology and File Formats.”</span> n.d. <a href='https://learn.gencore.bio.nyu.edu/ngs-file-formats/' title=''>https://learn.gencore.bio.nyu.edu/ngs-file-formats/</a>.</p></div>
+
+<div class="csl-entry" id="ref-gff3">
+<p>Stein, Lincoln. 2020. <span>
+“Generic Feature Format Version 3 (Gff3).”</span> <a href='https://github.com/The-Sequence-Ontology/Specifications/blob/master/gff3.md' title=''>https://github.com/The-Sequence-Ontology/Specifications/blob/master/gff3.md</a>.</p></div>
+
+<div class="csl-entry" id="ref-samtag">
+<p>The SAM/BAM Format Specification Working Group. 2020. <span>
+“Sequence Alignment/Map Optional Fields Specification.”</span> <a href='https://samtools.github.io/hts-specs/SAMtags.pdf' title=''>https://samtools.github.io/hts-specs/SAMtags.pdf</a>.</p></div>
+
+<div class="csl-entry" id="ref-sam">
+<p>———. 2021. <span>
+“Sequence Alignment/Map Format Specification.”</span> <a href='https://samtools.github.io/hts-specs/SAMv1.pdf' title=''>https://samtools.github.io/hts-specs/SAMv1.pdf</a>.</p></div></div></article></slide>
 
 
   <slide class="backdrop"></slide>

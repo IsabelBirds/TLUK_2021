@@ -3,6 +3,7 @@ title: "Overview of analysis workflows and file formats"
 subtitle: "Beginners session - TLUK Ribosome Profiling Workshop"
 author: "Isabel Birds & Julie Aspden"
 date: "02/07/2021"
+bibliography: TLUK.bib
 output: 
   ioslides_presentation:
         widescreen: true
@@ -85,7 +86,7 @@ The Sequence ID must be unique, and not contain spaces.
 
 ## FASTA files in Ribo-seq
 
-Highlight - contaminent removal, alignment
+Highlight - contaminent removal, alignment (reference genome)
 
 *Drosophila melanogaster* rRNA:
 
@@ -98,8 +99,14 @@ GTTAGTACTTAGATGGGGGACCGCTTGGGAACACCGCGTGTTGTTGGCCT
 ## FASTQ
 
 * FASTQ files contain sequencing data, and corresponding quality scores.
-* RNA-seq and ribo-seq files will be in FASTQ format.
-* Encoding used for quality scores can vary.
+* Phred score/Q score - measure the probability a base is called incorrectly.
+    * Q-score: Q = -10log~10~(e)
+    * where e is the estimated probablitiy of the base call being wrong
+    * Q = 20 - error rate 1 in 100.
+    * Q = 30 - eror rate 1 in 1000.
+* Encoding used for quality scores can vary - eg Phred +33, using ASCII characters to represent numerical scores.
+
+<font size ="3">[@NGS]</font>
 
 ## FASTQ
 
@@ -119,9 +126,14 @@ CGGTCNGTGAAGAGTCGAACGTGCTCTGCNGNAGATCGGAAGAGCACACNTCTGANCTCNAGTCACANTNANATNT
 AAAAA#EEEEEEEEE<E/EEEEEEEE/EE#/#EE/EEEE/EE<AE/EEE#EEAE/#EAE#EEAE/EA#E#E#EE#/
 ```
 
+A = 32, E = 36, # = 35, < = 27
+
 ## FASTQ files in Ribo-seq
 
 Highlight - raw data util alignments.
+RNA-seq and Ribo-seq data.
+* Single-end seq - one fastq per sample (R1).
+* Paired-end seq - two fastqs per sample (R1 and R2).
 
 ## fai
 
@@ -215,9 +227,11 @@ ctg123 . mRNA            1050  9000  .  +  .  ID=mRNA00001;Parent=gene00001;Name
 
 The first line is a comment that defines the version.
 
-### GFF3/GTF files in ribo-seq
+<font size ="3">[@gff3]</font>
 
-alignment
+## GFF3/GTF files in ribo-seq
+
+alignment - reference genome
 
 
 ## Coordinate systems
@@ -237,6 +251,8 @@ alignment
    ATG        chr1:1-3   chr1:0-3 	
    C          chr1:7-7 	 chr1:6-7 
 
+<font size ="3">[@based]</font>
+
 ## Coordinate systems
 
 ### 1-based
@@ -251,24 +267,151 @@ alignment
 ## SAM
 
 * Sequence Alignment Map (SAM) files contain sequence reads, and alignment data that links them to a reference sequence.
-* Used for visualing sequences in genome browsers.
+* Optional header section, followed by alignment section.
 
-## SAM files in ribo-seq
+## SAM - Header section 
 
-contaminant removal - aligned rRNA/tRNA reads, alignment output
-
+Example:
 ```{bash, eval = FALSE}
 @HD	VN:1.0	SO:unsorted
 @SQ	SN:gi|158246|gb|M21017.1|DRORGAB	LN:12026
 @SQ	SN:gi|174298|gb|M25016.1|DRORR5SEM	LN:120
-@PG	ID:bowtie2	PN:bowtie2	VN:	CL:"bowtie2-align-s --wrapper basic-0 --threads 6 --trim3 1 -k 1 -x bowtie_indexes/rRNA_fly --passthrough -U Quality_filter_outputs/SRR1548656.qualfilt_output.fastq"
-SRR1548656.34	4	*	0	0	*	*	0	0	TCCCATATTGTCTAGTGGTTAGGATATCCGGC	CCCFFFFFHHHHHJJGIIJJIJJJJIJJJJJJ	YT:Z:UU
-SRR1548656.35	0	gi|158246|gb|M21017.1|DRORGAB	5188	255	38M	*	0	0	ATGGGCCTCGTGCTCATCCTGGCAACAGGAACGACCAT	BCCFFFFFGHHHHJJJJJJJJJIGIJJJJIGCHIJJJJ	AS:i:0	XN:i:0	XM:i:0	XO:i:0	XG:i:0	NM:i:0	MD:Z:38	YT:Z:UU
-SRR1548656.36	0	gi|158246|gb|M21017.1|DRORGAB	2873	255	29M	*	0	0	TGCTTNGACTACATATGGTTGAGGGTTGT	CCCFF#2AFHHHHJJIJJJJJIJJJHIJJ	AS:i:-1	XN:i:0	XM:i:1	XO:i:0	XG:i:0	NM:i:1	MD:Z:5G23	YT:Z:UU
-SRR1548656.37	0	gi|158246|gb|M21017.1|DRORGAB	839	255	34M	*	0	0	ATTAGNGTGCTTAAAGCAGGCTTCAAATGCCTGA	CCCFF#2=DHHHHJJJJJJJJJJJJJJJJJJJJI	AS:i:-1	XN:i:0	XM:i:1	XO:i:0	XG:i:0	NM:i:1	MD:Z:5A28	YT:Z:UU
-SRR1548656.38	0	gi|158246|gb|M21017.1|DRORGAB	1682	255	33M	*	0	0	ATTTCNTAGACCGAGAGGTCCGGGTAAACCGCT	CCCFF#4ACFHHHJJJJJJJJJJJHFHIHFHIJ	AS:i:-1	XN:i:0	XM:i:1	XO:i:0	XG:i:0	NM:i:1	MD:Z:5C27	YT:Z:UU
-SRR1548656.39	0	gi|158246|gb|M21017.1|DRORGAB	2723	255	30M	*	0	0	ACTCTAAGCGGTGGATCACTCGGCTCATGG	CCCFFFFFGHHHHJIJJJJJJJJJJJJJJJ	AS:i:0	XN:i:0	XM:i:0	XO:i:0	XG:i:0	NM:i:0	MD:Z:30	YT:Z:UU
+@PG	ID:bowtie2	PN:bowtie2	VN:	CL:"bowtie2-align-s --wrapper basic-0 --threads 6 
+--trim3 1 -k 1 -x bowtie_indexes/rRNA_fly --passthrough -U 
+Quality_filter_outputs/SRR1548656.qualfilt_output.fastq"
 ```
+
+<b>\@HD</b>: File level metadata
+
+  * <b>VN</b> - format version
+  * <b>SO</b> - sorting order of alignments
+  
+## SAM - Header section 
+
+Example:
+```{bash, eval = FALSE}
+@HD	VN:1.0	SO:unsorted
+@SQ	SN:gi|158246|gb|M21017.1|DRORGAB	LN:12026
+@SQ	SN:gi|174298|gb|M25016.1|DRORR5SEM	LN:120
+@PG	ID:bowtie2	PN:bowtie2	VN:	CL:"bowtie2-align-s --wrapper basic-0 --threads 6 
+--trim3 1 -k 1 -x bowtie_indexes/rRNA_fly --passthrough -U 
+Quality_filter_outputs/SRR1548656.qualfilt_output.fastq"
+```
+
+<b>\@SQ</b>: Reference sequence metadata
+
+  * <b>SN</b> - reference sequence name
+  * <b>LN</b> - reference sequence length
+  
+
+## SAM - Header section 
+
+Example:
+```{bash, eval = FALSE}
+@HD	VN:1.0	SO:unsorted
+@SQ	SN:gi|158246|gb|M21017.1|DRORGAB	LN:12026
+@SQ	SN:gi|174298|gb|M25016.1|DRORR5SEM	LN:120
+@PG	ID:bowtie2	PN:bowtie2	VN:	CL:"bowtie2-align-s --wrapper basic-0 --threads 6 
+--trim3 1 -k 1 -x bowtie_indexes/rRNA_fly --passthrough -U 
+Quality_filter_outputs/SRR1548656.qualfilt_output.fastq"
+```
+  
+<b>\@RF</b>: Read group - multiple lines allowed
+
+<b>\@PG</b>: Program
+
+  * <b>ID</b> - program ID
+  * <b>PN</b> - program name
+  * <b>CL</b> - Command line
+  
+## SAM - Alignment section
+
+* tab delimited columns
+* 11 required columns
+* Optional TAGs
+
+```{bash, eval = FALSE}
+QNAME FLAG RNAME POS MAPQ CIGAR RNEXT PNEXT TLEN SEQ QUAL
+```
+
+Where:
+
+* <b>QNAME</b> - query sequence name
+* <b>FLAG</b> - bitwise flag - lookup code for features of read
+* <b>RNAME</b> - reference sequence name
+* <b>POS</b> - leftmost mapping postion (1-based)
+* <b>MAPQ</b> - mapping quality (how well the read aligned)
+* <b>CIGAR</b> - cigar string
+
+<div class="notes">
+flag - eg reverse comp, secondary alignment, unmapped.
+</div>
+
+## CIGAR strings
+
+* Compact Idiosyncratic Gapped Alignment Report (CIGAR) string
+* A shorthand encoding of an entire alignment:
+    * Where the sequence aligns/doesn't align.
+    * Deletions
+    * Insertions
+
+Example:  position=2, CIGAR=3M2I3M
+```{bash, eval = FALSE}
+AAGTC  TAGAA (ref) 
+  GTCGATAG (query)
+```
+
+Starting from 2, 3 matches, 2 inserts, 3 matches.
+
+<font size ="3">[@Cigar_ref]</font>
+
+## SAM - Alignment section
+
+```{bash, eval = FALSE}
+QNAME FLAG RNAME POS MAPQ CIGAR RNEXT PNEXT TLEN SEQ QUAL
+```
+
+Where:
+
+* <b>RNEXT</b> - reference name of the next read
+* <b>PNEXT</b> -  position of the next read (1-based)
+* <b>TLEN</b> - query sequence length - 0 for single segment sequence
+* <b>SEQ</b> - query sequence
+* <b>QUAL</b> - query sequence quality
+
+<font size ="3">[@sam]</font>
+
+## SAM - Alignment section
+
+### TAGs
+Format -
+  TAG : TYPE : VALUE
+
+Examples: 
+
+* AS:i:score = Alignment score generated by aligner.
+* H0:i:count Number of perfect hits.
+
+<font size ="3">[@samtag]</font>
+
+## SAM - Alignment section
+
+```{bash, eval = FALSE}
+QNAME FLAG RNAME POS MAPQ CIGAR RNEXT PNEXT TLEN SEQ QUAL
+```
+
+```{bash, eval = FALSE}
+
+SRR1548656.36	0	gi|158246|gb|M21017.1|DRORGAB	2873	255	29M	*	0	0	
+TGCTTNGACTACATATGGTTGAGGGTTGT	CCCFF#2AFHHHHJJIJJJJJIJJJHIJJ	
+AS:i:-1	XN:i:0	XM:i:1	XO:i:0	XG:i:0	NM:i:1	MD:Z:5G23	YT:Z:UU
+
+```
+
+
+## SAM files in ribo-seq
+
+contaminant removal - aligned rRNA/tRNA reads, alignment output
 
 
 ## BAM
@@ -306,7 +449,7 @@ Required fields:
 
 Optional fields
 
-* <b>name</b> - Name of the line
+* <b>name</b> - Label for the feature
 * <b>score</b> - between 0-1000, determines grayness of track
 * <b>strand</b> - + or - 
 * <b>thickStart</b> - start position of thick blocks (start codon)
@@ -316,7 +459,9 @@ Optional fields
 * <b>blockSizes</b> - comma-separated list of block sizes
 * <b>blockStarts</b> - comma-separated list of block starts relative to chromStart
 
-### BED files in ribo-seq
+<font size ="3">[@ensembl_bed]</font>
+
+## BED files in ribo-seq
 
 translation analysis
 
@@ -368,13 +513,14 @@ Where:
 
 ### Online forums:
 
-* Biostars
-* stackoverflow
+* [Biostars](https://www.biostars.org/)
+* [stackoverflow](https://stackoverflow.com/)
 
 ### Communities:
 
-* R-ladies
-* The Turing Way
+* [R-ladies](https://rladies.org/)
+* [The Turing Way](https://the-turing-way.netlify.app/welcome.html)
+
 
 ## md5sum
 
@@ -384,8 +530,10 @@ Where:
 Example on mac:
 
 ```{bash, eval=FALSE}
+md5sum TLUK2021_talk.Rmd
+
 MD5 (TLUK2021_talk.Rmd) = 01b9630ca402b38d9d50567fa783f92d
 ```
 
-
+## References
 
