@@ -24,16 +24,52 @@ h3 {
 
 ## Discussion points:
 
+* Overview of Ribo-seq analysis workflows
 * File types
 * Data needed
-* Overview of Ribo-seq analysis workflows
+
+# Workflow overview
+
+## Workflow
+
+Raw data -> Quality check -> Adapter Removal -> Quality filter -> Contaminant removal -> Alignment -> Read length selection -> Translation analysis
+
+## Quality check
+
+Input fastq, output fastq and quality check results
+
+## Adapter Removal 
+
+Input fastq and adaptor sequence, output fastq
+
+## Quality filter 
+
+Input fastq, output fastq
+
+## Contaminant removal 
+
+Input fastq and fasta, output fastq
+
+Data here - need rRNA and tRNA
+Where from?
+FASTA files.
+
+## Alignment 
+
+Input fastq, output SAM
+SAM to BAM
+aligned/sorted bam
+
+## Read length selection 
+
+## Translation analysis
 
 # File types
 
 ## FASTA
 
 * DNA, RNA, and protein sequences are stored in FASTA format.
-* This could be a single transcript, or an entire chromosome.
+* This could be a single transcript, or an entire genome.
 * FASTA files generally have the extension .fa or .fasta (eg file1.fa).
 * Multiple sequence alignments are also stored in FASTA format, with dashes (-) used to indicate gaps in the alignment.
 
@@ -46,6 +82,18 @@ TCAGAATTAAGCATTTTA
 ```
 
 The Sequence ID must be unique, and not contain spaces.
+
+## FASTA files in Ribo-seq
+
+Highlight - contaminent removal, alignment
+
+*Drosophila melanogaster* rRNA:
+
+```{bash, eval = FALSE}
+>gi|174298|gb|M25016.1|DRORR5SEM D.melanogaster 5S rRNA
+GCCAACGACCATACCACGCTGAATACATCGGTTCTCGTCCGATCACCGAAATTAAGCAGCGTCGCGGGCG
+GTTAGTACTTAGATGGGGGACCGCTTGGGAACACCGCGTGTTGTTGGCCT
+```
 
 ## FASTQ
 
@@ -70,6 +118,10 @@ CGGTCNGTGAAGAGTCGAACGTGCTCTGCNGNAGATCGGAAGAGCACACNTCTGANCTCNAGTCACANTNANATNT
 +
 AAAAA#EEEEEEEEE<E/EEEEEEEE/EE#/#EE/EEEE/EE<AE/EEE#EEAE/#EAE#EEAE/EA#E#E#EE#/
 ```
+
+## FASTQ files in Ribo-seq
+
+Highlight - raw data util alignments.
 
 ## fai
 
@@ -163,6 +215,10 @@ ctg123 . mRNA            1050  9000  .  +  .  ID=mRNA00001;Parent=gene00001;Name
 
 The first line is a comment that defines the version.
 
+### GFF3/GTF files in ribo-seq
+
+alignment
+
 
 ## Coordinate systems
 
@@ -197,11 +253,34 @@ The first line is a comment that defines the version.
 * Sequence Alignment Map (SAM) files contain sequence reads, and alignment data that links them to a reference sequence.
 * Used for visualing sequences in genome browsers.
 
+## SAM files in ribo-seq
+
+contaminant removal - aligned rRNA/tRNA reads, alignment output
+
+```{bash, eval = FALSE}
+@HD	VN:1.0	SO:unsorted
+@SQ	SN:gi|158246|gb|M21017.1|DRORGAB	LN:12026
+@SQ	SN:gi|174298|gb|M25016.1|DRORR5SEM	LN:120
+@PG	ID:bowtie2	PN:bowtie2	VN:	CL:"bowtie2-align-s --wrapper basic-0 --threads 6 --trim3 1 -k 1 -x bowtie_indexes/rRNA_fly --passthrough -U Quality_filter_outputs/SRR1548656.qualfilt_output.fastq"
+SRR1548656.34	4	*	0	0	*	*	0	0	TCCCATATTGTCTAGTGGTTAGGATATCCGGC	CCCFFFFFHHHHHJJGIIJJIJJJJIJJJJJJ	YT:Z:UU
+SRR1548656.35	0	gi|158246|gb|M21017.1|DRORGAB	5188	255	38M	*	0	0	ATGGGCCTCGTGCTCATCCTGGCAACAGGAACGACCAT	BCCFFFFFGHHHHJJJJJJJJJIGIJJJJIGCHIJJJJ	AS:i:0	XN:i:0	XM:i:0	XO:i:0	XG:i:0	NM:i:0	MD:Z:38	YT:Z:UU
+SRR1548656.36	0	gi|158246|gb|M21017.1|DRORGAB	2873	255	29M	*	0	0	TGCTTNGACTACATATGGTTGAGGGTTGT	CCCFF#2AFHHHHJJIJJJJJIJJJHIJJ	AS:i:-1	XN:i:0	XM:i:1	XO:i:0	XG:i:0	NM:i:1	MD:Z:5G23	YT:Z:UU
+SRR1548656.37	0	gi|158246|gb|M21017.1|DRORGAB	839	255	34M	*	0	0	ATTAGNGTGCTTAAAGCAGGCTTCAAATGCCTGA	CCCFF#2=DHHHHJJJJJJJJJJJJJJJJJJJJI	AS:i:-1	XN:i:0	XM:i:1	XO:i:0	XG:i:0	NM:i:1	MD:Z:5A28	YT:Z:UU
+SRR1548656.38	0	gi|158246|gb|M21017.1|DRORGAB	1682	255	33M	*	0	0	ATTTCNTAGACCGAGAGGTCCGGGTAAACCGCT	CCCFF#4ACFHHHJJJJJJJJJJJHFHIHFHIJ	AS:i:-1	XN:i:0	XM:i:1	XO:i:0	XG:i:0	NM:i:1	MD:Z:5C27	YT:Z:UU
+SRR1548656.39	0	gi|158246|gb|M21017.1|DRORGAB	2723	255	30M	*	0	0	ACTCTAAGCGGTGGATCACTCGGCTCATGG	CCCFFFFFGHHHHJIJJJJJJJJJJJJJJJ	AS:i:0	XN:i:0	XM:i:0	XO:i:0	XG:i:0	NM:i:0	MD:Z:30	YT:Z:UU
+```
+
+
 ## BAM
 
 * BAM files are binary versions of SAM files.
 * Not human readable, but much smaller files.
 * .bai - index as in .fai
+
+## BAM in ribo-seq
+
+alignments
+probably get sam out, change to bam 
 
 ## BED
 
@@ -237,69 +316,76 @@ Optional fields
 * <b>blockSizes</b> - comma-separated list of block sizes
 * <b>blockStarts</b> - comma-separated list of block starts relative to chromStart
 
-# Workflow overview
+### BED files in ribo-seq
 
-## Workflow
+translation analysis
 
-To do - make flow chart
+## Generic file types
 
-Raw data -> Quality check -> Adapter Removal -> Quality filter -> Contaminant removal -> Alignment -> Read length selection -> Translation analysis
-
-## Quality check
-
-Input fastq, output fastq and quality check results
-
-## Adapter Removal 
-
-Input fastq and adaptor sequence, output fastq
-
-## Quality filter 
-
-Input fastq, output fastq
-
-## Contaminant removal 
-
-Input fastq and fasta, output fastq
-
-Data here - need rRNA and tRNA
-Where from?
-FASTA files.
-
-## Alignment 
-
-Input fastq, output SAM
-SAM to BAM
-aligned/sorted bam
-
-## Read length selection 
-
-## Translation analysis
-
+* Log files 
+    * Program and version
+    * Command used
+    * Job start and end time
+    * Results
+    * Errors
 
 ## Thanks!
 ### Any questions?
-
-
-![The Aspden Lab](images/group_photo.jpeg){#id .class width=50% height=50%}
-
 
 
 # Extras
 
 ## Compressing files
 
-* zip 
-* gzip
-* tar ball
+* .zip - a compressed archive of file(s).
+* .gz - a compressed file(s).
+* .tar - an archive of files(s).
+
+<div class="notes">
+Archiving - storing multiple files as one file - for easier transfer. 
+tar/tarball
+</div>
+
+## Compressing files
+
+```{bash, eval = FALSE}
+#Create a tarball
+tar -czvf filename.tar.gz /path/to/dir
+
+#Extract a tarball
+tar -xzvf filename.tar.gz
+```
+
+Where:
+
+* -c = create new archive
+* -x = extract files from an archive
+* -z = use gzip
+* -v = verbose
+* -f = use archive file
 
 ## Asking for help
 
+### Online forums:
+
 * Biostars
 * stackoverflow
-* communties
-* FAQs
+
+### Communities:
+
+* R-ladies
+* The Turing Way
 
 ## md5sum
 
-* Checking your files have transferred without error - md5sum
+* You may be asked for the md5sum or MD5 hash to verify file transfers.
+* This is a code that acts as a fingerprint for a file - if the file changes, the code will change.
+
+Example on mac:
+
+```{bash, eval=FALSE}
+MD5 (TLUK2021_talk.Rmd) = 01b9630ca402b38d9d50567fa783f92d
+```
+
+
 
