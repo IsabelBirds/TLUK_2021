@@ -75,7 +75,7 @@ aligned/sorted bam
 * Multiple sequence alignments are also stored in FASTA format, with dashes (-) used to indicate gaps in the alignment.
 
 Example:
-```{bash, eval = FALSE}
+```{bash, eval = FALSE,}
 >ENST00000607096.1|ENSG00000284332.1|-|-|MIR1302-2-201|MIR1302-2|138|miRNA|
 GGATGCCCAGCTAGTTTGAATTTTAGATAAACAACGAATAATTTCGTAGCATAAATATGT
 CCCAAGCTTAGTTTGGGACATACTTATGCTAAAAAACATTATTGGTTGTTTATCTGAGAT
@@ -99,12 +99,12 @@ GTTAGTACTTAGATGGGGGACCGCTTGGGAACACCGCGTGTTGTTGGCCT
 ## FASTQ
 
 * FASTQ files contain sequencing data, and corresponding quality scores.
-* Phred score/Q score - measure the probability a base is called incorrectly.
-    * Q-score: Q = -10log~10~(e)
+* Phred score/Q score - measures the probability a base is called incorrectly.
+    * <b>Q-score</b>: Q = -10log~10~(e)
     * where e is the estimated probablitiy of the base call being wrong
     * Q = 20 - error rate 1 in 100.
     * Q = 30 - eror rate 1 in 1000.
-* Encoding used for quality scores can vary - eg Phred +33, using ASCII characters to represent numerical scores.
+* Quality scores are encoded, using ASCII characters to represent numerical scores.
 
 <font size ="3">[@NGS]</font>
 
@@ -130,8 +130,9 @@ A = 32, E = 36, # = 35, < = 27
 
 ## FASTQ files in Ribo-seq
 
-Highlight - raw data util alignments.
+Highlight - raw data until alignments.
 RNA-seq and Ribo-seq data.
+
 * Single-end seq - one fastq per sample (R1).
 * Paired-end seq - two fastqs per sample (R1 and R2).
 
@@ -433,7 +434,7 @@ probably get sam out, change to bam
 IMAGE OF DATA TRACK FROM GENOME BROSWER
 
 ```{bash, eval = FALSE}
-chrom chromStart chromEnd name strand thickStart thickEnd itemRgb blockCount 
+chrom chromStart chromEnd name score strand thickStart thickEnd itemRgb blockCount 
 blockSizes blockStarts
 ```
 
@@ -460,6 +461,25 @@ Optional fields
 * <b>blockStarts</b> - comma-separated list of block starts relative to chromStart
 
 <font size ="3">[@ensembl_bed]</font>
+
+## BED
+
+```{bash, eval = FALSE}
+chrom chromStart chromEnd name  score strand thickStart thickEnd itemRgb blockCount 
+blockSizes blockStarts
+```
+
+```{bash, eval = FALSE}
+chr7  127471196  127472363  Pos1  0  +  127471196  127472363  255,0,0
+chr7  127472363  127473530  Pos2  0  +  127472363  127473530  255,0,0
+chr7  127473530  127474697  Pos3  0  +  127473530  127474697  255,0,0
+chr7  127474697  127475864  Pos4  0  +  127474697  127475864  255,0,0
+chr7  127475864  127477031  Neg1  0  -  127475864  127477031  0,0,255
+chr7  127477031  127478198  Neg2  0  -  127477031  127478198  0,0,255
+chr7  127478198  127479365  Neg3  0  -  127478198  127479365  0,0,255
+chr7  127479365  127480532  Pos5  0  +  127479365  127480532  255,0,0
+chr7  127480532  127481699  Neg4  0  -  127480532  127481699  0,0,255
+```
 
 ## BED files in ribo-seq
 
