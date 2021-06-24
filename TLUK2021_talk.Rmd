@@ -12,6 +12,7 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(DiagrammeR)
 ```
 <style>
 h2 { 
@@ -21,49 +22,6 @@ h3 {
  color: black;		
 }
 </style>
-
-
-## Discussion points:
-
-* Overview of Ribo-seq analysis workflows
-* File types
-* Data needed
-
-# Workflow overview
-
-## Workflow
-
-Raw data -> Quality check -> Adapter Removal -> Quality filter -> Contaminant removal -> Alignment -> Read length selection -> Translation analysis
-
-## Quality check
-
-Input fastq, output fastq and quality check results
-
-## Adapter Removal 
-
-Input fastq and adaptor sequence, output fastq
-
-## Quality filter 
-
-Input fastq, output fastq
-
-## Contaminant removal 
-
-Input fastq and fasta, output fastq
-
-Data here - need rRNA and tRNA
-Where from?
-FASTA files.
-
-## Alignment 
-
-Input fastq, output SAM
-SAM to BAM
-aligned/sorted bam
-
-## Read length selection 
-
-## Translation analysis
 
 # File types
 
@@ -75,7 +33,7 @@ aligned/sorted bam
 * Multiple sequence alignments are also stored in FASTA format, with dashes (-) used to indicate gaps in the alignment.
 
 Example:
-```{bash, eval = FALSE,}
+```{bash, eval = FALSE}
 >ENST00000607096.1|ENSG00000284332.1|-|-|MIR1302-2-201|MIR1302-2|138|miRNA|
 GGATGCCCAGCTAGTTTGAATTTTAGATAAACAACGAATAATTTCGTAGCATAAATATGT
 CCCAAGCTTAGTTTGGGACATACTTATGCTAAAAAACATTATTGGTTGTTTATCTGAGAT
@@ -86,15 +44,64 @@ The Sequence ID must be unique, and not contain spaces.
 
 ## FASTA files in Ribo-seq
 
-Highlight - contaminent removal, alignment (reference genome)
+<div style="float: right; width: 25%;">
+```{r,echo=FALSE, fig.width=3.5}
+
+grViz("digraph flowchart {
+      node [fontname = Helvetica, shape = rectangle, fontsize=18]        
+      tab1 [label = 'Raw data', shape = folder]
+      tab2 [label = 'Quality Check']
+      tab3 [label = 'Adapter Removal']
+      tab4 [label = 'Contaminant removal']
+      tab5 [label = 'Quality Filter']
+      tab6 [label = 'Alignment']
+      tab7 [label = 'Read length selection']
+      tab8 [label = 'Translation analysis']
+
+      # edge definitions with the node IDs
+      tab1 -> tab2 -> tab3 -> tab4 -> tab5 -> tab6 -> tab7 -> tab8;
+      }
+      ")
+
+```
+</div>
+
+## FASTA files in Ribo-seq
+
+<div style="float: left; width: 75%;">
 
 *Drosophila melanogaster* rRNA:
 
 ```{bash, eval = FALSE}
 >gi|174298|gb|M25016.1|DRORR5SEM D.melanogaster 5S rRNA
-GCCAACGACCATACCACGCTGAATACATCGGTTCTCGTCCGATCACCGAAATTAAGCAGCGTCGCGGGCG
-GTTAGTACTTAGATGGGGGACCGCTTGGGAACACCGCGTGTTGTTGGCCT
+GCCAACGACCATACCACGCTGAATACATCGGTTCTCGTCCGATCACCGAAATTAAGC
+AGCGTCGCGGGCGGTTAGTACTTAGATGGGGGACCGCTTGGGAACACCGCGTGTTGT
+TGGCCT
 ```
+
+</div>
+
+<div style="float: right; width: 25%;">
+```{r,echo=FALSE, fig.width=3.5}
+
+grViz("digraph flowchart {
+      node [fontname = Helvetica, shape = rectangle, fontsize=18]        
+      tab1 [label = 'Raw data', shape = folder]
+      tab2 [label = 'Quality Check']
+      tab3 [label = 'Adapter Removal']
+      tab4 [label = 'Contaminant removal', color=Pink, style=filled]
+      tab5 [label = 'Quality Filter']
+      tab6 [label = 'Alignment', color=Pink, style=filled]
+      tab7 [label = 'Read length selection']
+      tab8 [label = 'Translation analysis']
+
+      # edge definitions with the node IDs
+      tab1 -> tab2 -> tab3 -> tab4 -> tab5 -> tab6 -> tab7 -> tab8;
+      }
+      ")
+
+```
+</div>
 
 ## FASTQ
 
@@ -130,11 +137,56 @@ A = 32, E = 36, # = 35, < = 27
 
 ## FASTQ files in Ribo-seq
 
-Highlight - raw data until alignments.
-RNA-seq and Ribo-seq data.
+<div style="float: right; width: 25%;">
+```{r,echo=FALSE, fig.width=3.5}
 
+grViz("digraph flowchart {
+      node [fontname = Helvetica, shape = rectangle, fontsize=18]        
+      tab1 [label = 'Raw data', shape = folder]
+      tab2 [label = 'Quality Check']
+      tab3 [label = 'Adapter Removal']
+      tab4 [label = 'Contaminant removal']
+      tab5 [label = 'Quality Filter']
+      tab6 [label = 'Alignment']
+      tab7 [label = 'Read length selection']
+      tab8 [label = 'Translation analysis']
+
+      # edge definitions with the node IDs
+      tab1 -> tab2 -> tab3 -> tab4 -> tab5 -> tab6 -> tab7 -> tab8;
+      }
+      ")
+
+```
+</div>
+
+## FASTQ files in Ribo-seq
+
+<div style="float: left; width: 75%;">
 * Single-end seq - one fastq per sample (R1).
 * Paired-end seq - two fastqs per sample (R1 and R2).
+</div>
+
+<div style="float: right; width: 25%;">
+```{r,echo=FALSE, fig.width=3.5}
+
+grViz("digraph flowchart {
+      node [fontname = Helvetica, shape = rectangle, fontsize=18]        
+      tab1 [label = 'Raw data', shape = folder, color=Pink, style=filled]
+      tab2 [label = 'Quality Check', color=Pink, style=filled]
+      tab3 [label = 'Adapter Removal', color=Pink, style=filled]
+      tab4 [label = 'Contaminant removal', color=Pink, style=filled]
+      tab5 [label = 'Quality Filter', color=Pink, style=filled]
+      tab6 [label = 'Alignment', color=Pink, style=filled]
+      tab7 [label = 'Read length selection']
+      tab8 [label = 'Translation analysis']
+
+      # edge definitions with the node IDs
+      tab1 -> tab2 -> tab3 -> tab4 -> tab5 -> tab6 -> tab7 -> tab8;
+      }
+      ")
+
+```
+</div>
 
 ## fai
 
@@ -161,8 +213,35 @@ Where:
 * <b>LINEWIDTH</b>	- The number of bytes in each line, including the newline
 * <b>QUALOFFSET</b> -	Offset of sequence's first quality score
 
-## fai 
+## fai files in Ribo-seq
 
+</div>
+
+<div style="float: right; width: 25%;">
+```{r,echo=FALSE, fig.width=3.5}
+
+grViz("digraph flowchart {
+      node [fontname = Helvetica, shape = rectangle, fontsize=18]        
+      tab1 [label = 'Raw data', shape = folder]
+      tab2 [label = 'Adapter Removal']
+      tab3 [label = 'Quality Check']
+      tab4 [label = 'Contaminant removal']
+      tab5 [label = 'Quality Filter']
+      tab6 [label = 'Alignment']
+      tab7 [label = 'Assess Ribosome \nProfiling Quality']
+      tab8 [label = 'Translation analysis']
+
+      # edge definitions with the node IDs
+      tab1 -> tab2 -> tab3 -> tab4 -> tab5 -> tab6 -> tab7 -> tab8;
+      }
+      ")
+
+```
+</div>
+
+## fai files in Ribo-seq
+
+<div style="float: left; width: 75%;">
 ```{bash, eval = FALSE}
 NAME  LENGTH  OFFSET  LINEBASES  LINEWIDTH   QUALOFFSET
 ```
@@ -174,6 +253,29 @@ chr1	248956422	8	60	61
 chr2	242193529	253105712	60	61
 chr3	198295559	499335808	60	61
 ```
+</div>
+
+<div style="float: right; width: 25%;">
+```{r,echo=FALSE, fig.width=3.5}
+
+grViz("digraph flowchart {
+      node [fontname = Helvetica, shape = rectangle, fontsize=18]        
+      tab1 [label = 'Raw data', shape = folder]
+      tab2 [label = 'Adapter Removal']
+      tab3 [label = 'Quality Check']
+      tab4 [label = 'Contaminant removal']
+      tab5 [label = 'Quality Filter']
+      tab6 [label = 'Alignment', color=Pink, style=filled]
+      tab7 [label = 'Assess Ribosome \nProfiling Quality']
+      tab8 [label = 'Translation analysis']
+
+      # edge definitions with the node IDs
+      tab1 -> tab2 -> tab3 -> tab4 -> tab5 -> tab6 -> tab7 -> tab8;
+      }
+      ")
+
+```
+</div>
 
 ## GFF3
 
@@ -230,10 +332,54 @@ The first line is a comment that defines the version.
 
 <font size ="3">[@gff3]</font>
 
-## GFF3/GTF files in ribo-seq
+## GFF3/GTF files in Ribo-seq
 
-alignment - reference genome
+<div style="float: right; width: 25%;">
+```{r,echo=FALSE, fig.width=3.5}
 
+grViz("digraph flowchart {
+      node [fontname = Helvetica, shape = rectangle, fontsize=18]        
+      tab1 [label = 'Raw data', shape = folder]
+      tab2 [label = 'Adapter Removal']
+      tab3 [label = 'Quality Check']
+      tab4 [label = 'Contaminant removal']
+      tab5 [label = 'Quality Filter']
+      tab6 [label = 'Alignment']
+      tab7 [label = 'Assess Ribosome \nProfiling Quality']
+      tab8 [label = 'Translation analysis']
+
+      # edge definitions with the node IDs
+      tab1 -> tab2 -> tab3 -> tab4 -> tab5 -> tab6 -> tab7 -> tab8;
+      }
+      ")
+
+```
+</div>
+
+## GFF3/GTF files in Ribo-seq
+
+<div style="float: right; width: 25%;">
+```{r,echo=FALSE, fig.width=3.5}
+
+grViz("digraph flowchart {
+      node [fontname = Helvetica, shape = rectangle, fontsize=18]        
+      
+      tab1 [label = 'Raw data', shape = folder]
+      tab2 [label = 'Adapter Removal']
+      tab3 [label = 'Quality Check']
+      tab4 [label = 'Contaminant removal']
+      tab5 [label = 'Quality Filter']
+      tab6 [label = 'Alignment', color=Pink, style=filled]
+      tab7 [label = 'Assess Ribosome \nProfiling Quality']
+      tab8 [label = 'Translation analysis', color=Pink, style=filled]
+
+      # edge definitions with the node IDs
+      tab1 -> tab2 -> tab3 -> tab4 -> tab5 -> tab6 -> tab7 -> tab8;
+      }
+      ")
+
+```
+</div>
 
 ## Coordinate systems
 
@@ -409,29 +555,73 @@ AS:i:-1	XN:i:0	XM:i:1	XO:i:0	XG:i:0	NM:i:1	MD:Z:5G23	YT:Z:UU
 
 ```
 
-
-## SAM files in ribo-seq
-
-contaminant removal - aligned rRNA/tRNA reads, alignment output
-
-
 ## BAM
 
 * BAM files are binary versions of SAM files.
 * Not human readable, but much smaller files.
 * .bai - index as in .fai
 
-## BAM in ribo-seq
+## BAM/SAM files in Ribo-seq
 
-alignments
-probably get sam out, change to bam 
+<div style="float: right; width: 25%;">
+```{r,echo=FALSE, fig.width=3.5}
+
+grViz("digraph flowchart {
+      node [fontname = Helvetica, shape = rectangle, fontsize=18]        
+      tab1 [label = 'Raw data', shape = folder]
+      tab2 [label = 'Adapter Removal']
+      tab3 [label = 'Quality Check']
+      tab4 [label = 'Contaminant removal']
+      tab5 [label = 'Quality Filter']
+      tab6 [label = 'Alignment']
+      tab7 [label = 'Assess Ribosome \nProfiling Quality']
+      tab8 [label = 'Translation analysis']
+
+      # edge definitions with the node IDs
+      tab1 -> tab2 -> tab3 -> tab4 -> tab5 -> tab6 -> tab7 -> tab8;
+      }
+      ")
+
+```
+</div>
+
+## BAM/SAM files in Ribo-seq
+<div style="float: left; width: 75%;">
+For example:
+
+Unsorted SAM file from aligner, convert to BAM, sort and index for downstream steps.
+</div>
+
+<div style="float: right; width: 25%;">
+```{r,echo=FALSE, fig.width=3.5}
+
+grViz("digraph flowchart {
+      node [fontname = Helvetica, shape = rectangle, fontsize=18]      
+      
+      tab1 [label = 'Raw data', shape = folder]
+      tab2 [label = 'Adapter Removal']
+      tab3 [label = 'Quality Check']
+      tab4 [label = 'Contaminant removal', color=Pink, style=filled]
+      tab5 [label = 'Quality Filter']
+      tab6 [label = 'Alignment', color=Pink, style=filled]
+      tab7 [label = 'Assess Ribosome \nProfiling Quality', color=Pink, style=filled]
+      tab8 [label = 'Translation analysis', color=Pink, style=filled]
+      
+      # edge definitions with the node IDs
+      tab1 -> tab2 -> tab3 -> tab4 -> tab5 -> tab6 -> tab7 -> tab8;
+      }
+      ")
+
+```
+</div>
+
 
 ## BED
 
 * BED files allow users to define how annotation tracks are displayed
 * Upto 12 tab-delimited columns, only the first 3 are required.
 
-IMAGE OF DATA TRACK FROM GENOME BROSWER
+<img src="images/data_track.png" height="200px"/>
 
 ```{bash, eval = FALSE}
 chrom chromStart chromEnd name score strand thickStart thickEnd itemRgb blockCount 
@@ -483,7 +673,55 @@ chr7  127480532  127481699  Neg4  0  -  127480532  127481699  0,0,255
 
 ## BED files in ribo-seq
 
-translation analysis
+<div style="float: right; width: 25%;">
+```{r,echo=FALSE, fig.width=3.5}
+
+grViz("digraph flowchart {
+      node [fontname = Helvetica, shape = rectangle, fontsize=18]        
+      tab1 [label = 'Raw data', shape = folder]
+      tab2 [label = 'Adapter Removal']
+      tab3 [label = 'Quality Check']
+      tab4 [label = 'Contaminant removal']
+      tab5 [label = 'Quality Filter']
+      tab6 [label = 'Alignment']
+      tab7 [label = 'Assess Ribosome \nProfiling Quality']
+      tab8 [label = 'Translation analysis']
+
+      # edge definitions with the node IDs
+      tab1 -> tab2 -> tab3 -> tab4 -> tab5 -> tab6 -> tab7 -> tab8;
+      }
+      ")
+
+```
+</div>
+
+## BED files in ribo-seq
+
+<div style="float: left; width: 75%;">
+<img src="images/data_track.png" height="150px"/>
+</div>
+
+<div style="float: right; width: 25%;">
+```{r,echo=FALSE, fig.width=3.5}
+
+grViz("digraph flowchart {
+      node [fontname = Helvetica, shape = rectangle, fontsize=18]        
+      tab1 [label = 'Raw data', shape = folder]
+      tab2 [label = 'Adapter Removal']
+      tab3 [label = 'Quality Check']
+      tab4 [label = 'Contaminant removal']
+      tab5 [label = 'Quality Filter']
+      tab6 [label = 'Alignment']
+      tab7 [label = 'Assess Ribosome \nProfiling Quality']
+      tab8 [label = 'Translation analysis', color=Pink, style=filled]
+
+      # edge definitions with the node IDs
+      tab1 -> tab2 -> tab3 -> tab4 -> tab5 -> tab6 -> tab7 -> tab8;
+      }
+      ")
+
+```
+</div>
 
 ## Generic file types
 
@@ -554,6 +792,13 @@ md5sum TLUK2021_talk.Rmd
 
 MD5 (TLUK2021_talk.Rmd) = 01b9630ca402b38d9d50567fa783f92d
 ```
+
+<style>
+slides > slide { overflow: scroll; }
+slides > slide:not(.nobackground):after {
+  content: '';
+}
+</style>
 
 ## References
 
