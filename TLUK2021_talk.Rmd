@@ -1,19 +1,21 @@
 ---
-title: "Overview of analysis workflows and file formats"
+title: "Overview of analysis workflows and file types"
 subtitle: "Beginners session - TLUK Ribosome Profiling Workshop"
-author: "Isabel Birds & Julie Aspden"
+author: "Isabel Birds"
 date: "02/07/2021"
 bibliography: TLUK.bib
 output: 
   ioslides_presentation:
         widescreen: true
         transition: slower
+        fig_caption: true
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(DiagrammeR)
 ```
+
 <style>
 h2 { 
  color: black;		
@@ -21,7 +23,90 @@ h2 {
 h3 { 
  color: black;		
 }
+figcaption {
+    margin-bottom: 5px;
+    font-size: 60%;
+}
+p.caption {
+  font-size: 0.6em;
+  margin-top: 5px;
+}
 </style>
+
+# File formats
+
+## Text files 
+
+<div style="float: left; width: 30%;">
+  * Plain text - a file containing only text.
+  * Rich text - a file which includes text formatting (e.g. bold text).
+</div>  
+  
+<div style="float: right; width: 65%;">
+
+ <img src="images/terminal.png" height="425px" alt="Screenshot of the terminal, showing a plain text fasta file."/>
+ <figcaption>Plain text file in the terminal.</figcaption>
+
+</div> 
+
+## Text files 
+
+<div style="float: left; width: 30%;">
+  * Plain text - a file containing only text.
+  * Rich text - a file which includes text formatting (e.g. bold text)
+</div>  
+  
+<div style="float: right; width: 65%;">
+
+ <img src="images/text_edit.png" height="450px" alt="Screenshot of a text edit window, showing a plain text fasta file."/>
+ <figcaption>Plain text file viewed in text edit. </figcaption>
+
+
+</div> 
+
+
+## File formats
+
+Binary files:
+
+<div style="float: left; width: 30%;">
+
+ <img src="images/sadie.jpg" height="270px" alt="Photo of a little black dog licking an ice lolly."/>
+ <figcaption>Sadie!</figcaption>
+
+</div>  
+  
+<div style="float: right; width: 70%;">
+
+ <img src="images/sadie_text.png" height="400px" alt="Screenshot of a text edit window, a binary file. It is not human readable."/>
+ <figcaption>Binary file (Sadie.jpg) viewed in text edit. </figcaption>
+
+
+</div> 
+
+# Workflow Overview
+
+## Overview
+
+```{r,echo=FALSE, fig.width=3.5,fig.alt="A flow chart for a general ribo-seq analysis workflow. The flow is as follows: Raw data - Adapter Removal - Quality Check - Contaminant removal - Quality Filter Alignment - Assess Ribosome Profiling Quality - Translation analysis."}
+
+grViz("digraph flowchart {
+      node [fontname = Helvetica, shape = rectangle, fontsize=18]        
+      tab1 [label = 'Raw data', shape = folder]
+      tab2 [label = 'Adapter Removal']
+      tab3 [label = 'Quality Check']
+      tab4 [label = 'Contaminant removal']
+      tab5 [label = 'Quality Filter']
+      tab6 [label = 'Alignment']
+      tab7 [label = 'Assess Ribosome \nProfiling Quality']
+      tab8 [label = 'Translation analysis']
+
+      # edge definitions with the node IDs
+      tab1 -> tab2 -> tab3 -> tab4 -> tab5 -> tab6 -> tab7 -> tab8;
+      }
+      ")
+
+```
 
 # File types
 
@@ -40,12 +125,12 @@ CCCAAGCTTAGTTTGGGACATACTTATGCTAAAAAACATTATTGGTTGTTTATCTGAGAT
 TCAGAATTAAGCATTTTA
 ```
 
-The Sequence ID must be unique, and not contain spaces.
+The Sequence ID must be unique, and should not contain spaces.
 
 ## FASTA files in Ribo-seq
 
 <div style="float: right; width: 25%;">
-```{r,echo=FALSE, fig.width=3.5}
+```{r,echo=FALSE, fig.width=3.5, fig.alt="A flow chart for a general ribo-seq analysis workflow. The flow is as follows: Raw data - Adapter Removal - Quality Check - Contaminant removal - Quality Filter Alignment - Assess Ribosome Profiling Quality - Translation analysis."}
 
 grViz("digraph flowchart {
       node [fontname = Helvetica, shape = rectangle, fontsize=18]        
@@ -73,7 +158,7 @@ grViz("digraph flowchart {
 *Drosophila melanogaster* rRNA:
 
 ```{bash, eval = FALSE}
->gi|174298|gb|M25016.1|DRORR5SEM D.melanogaster 5S rRNA
+>gi|174298|gb|M25016.1|DRORR5SEM_D.melanogaster_5S_rRNA
 GCCAACGACCATACCACGCTGAATACATCGGTTCTCGTCCGATCACCGAAATTAAGC
 AGCGTCGCGGGCGGTTAGTACTTAGATGGGGGACCGCTTGGGAACACCGCGTGTTGT
 TGGCCT
@@ -82,7 +167,8 @@ TGGCCT
 </div>
 
 <div style="float: right; width: 25%;">
-```{r,echo=FALSE, fig.width=3.5}
+```{r,echo=FALSE, fig.width=3.5,fig.alt="A flow chart for a general ribo-seq analysis workflow. The flow is as follows: Raw data - Adapter Removal - Quality Check - Contaminant removal - Quality Filter Alignment - Assess Ribosome Profiling Quality - Translation analysis. The contaminant removal and alignment steps are highlighted to show that they require FASTA files."}
+
 
 grViz("digraph flowchart {
       node [fontname = Helvetica, shape = rectangle, fontsize=18]        
@@ -103,6 +189,8 @@ grViz("digraph flowchart {
 ```
 </div>
 
+<font size ="3">[@fasta]</font>
+
 ## FASTQ
 
 * FASTQ files contain sequencing data, and corresponding quality scores.
@@ -113,7 +201,8 @@ grViz("digraph flowchart {
     * Q = 30 - eror rate 1 in 1000.
 * Quality scores are encoded, using ASCII characters to represent numerical scores.
 
-<font size ="3">[@NGS]</font>
+<font size ="3">[@NGS;@fastq]</font>
+
 
 ## FASTQ
 
@@ -138,7 +227,7 @@ A = 32, E = 36, # = 35, < = 27
 ## FASTQ files in Ribo-seq
 
 <div style="float: right; width: 25%;">
-```{r,echo=FALSE, fig.width=3.5}
+```{r,echo=FALSE, fig.width=3.5,fig.alt="A flow chart for a general ribo-seq analysis workflow. The flow is as follows: Raw data - Adapter Removal - Quality Check - Contaminant removal - Quality Filter Alignment - Assess Ribosome Profiling Quality - Translation analysis."}
 
 grViz("digraph flowchart {
       node [fontname = Helvetica, shape = rectangle, fontsize=18]        
@@ -167,7 +256,7 @@ grViz("digraph flowchart {
 </div>
 
 <div style="float: right; width: 25%;">
-```{r,echo=FALSE, fig.width=3.5}
+```{r,echo=FALSE, fig.width=3.5,fig.alt="A flow chart for a general ribo-seq analysis workflow. The flow is as follows: Raw data - Adapter Removal - Quality Check - Contaminant removal - Quality Filter Alignment - Assess Ribosome Profiling Quality - Translation analysis. The all steps from Raw data to alignment are highlighted to show that they require FASTQ files."}
 
 grViz("digraph flowchart {
       node [fontname = Helvetica, shape = rectangle, fontsize=18]        
@@ -218,7 +307,7 @@ Where:
 </div>
 
 <div style="float: right; width: 25%;">
-```{r,echo=FALSE, fig.width=3.5}
+```{r,echo=FALSE, fig.width=3.5,fig.alt="A flow chart for a general ribo-seq analysis workflow. The flow is as follows: Raw data - Adapter Removal - Quality Check - Contaminant removal - Quality Filter Alignment - Assess Ribosome Profiling Quality - Translation analysis."}
 
 grViz("digraph flowchart {
       node [fontname = Helvetica, shape = rectangle, fontsize=18]        
@@ -256,14 +345,14 @@ chr3	198295559	499335808	60	61
 </div>
 
 <div style="float: right; width: 25%;">
-```{r,echo=FALSE, fig.width=3.5}
+```{r,echo=FALSE, fig.width=3.5,fig.alt="A flow chart for a general ribo-seq analysis workflow. The flow is as follows: Raw data - Adapter Removal - Quality Check - Contaminant removal - Quality Filter Alignment - Assess Ribosome Profiling Quality - Translation analysis. The contaminant removal and alignment steps are highlighted to show that they require .fai files."}
 
 grViz("digraph flowchart {
       node [fontname = Helvetica, shape = rectangle, fontsize=18]        
       tab1 [label = 'Raw data', shape = folder]
       tab2 [label = 'Adapter Removal']
       tab3 [label = 'Quality Check']
-      tab4 [label = 'Contaminant removal']
+      tab4 [label = 'Contaminant removal', color=Pink, style=filled]
       tab5 [label = 'Quality Filter']
       tab6 [label = 'Alignment', color=Pink, style=filled]
       tab7 [label = 'Assess Ribosome \nProfiling Quality']
@@ -279,10 +368,17 @@ grViz("digraph flowchart {
 
 ## GFF3
 
+ <img src="images/GFF_meme.jpeg" height="400px" alt="Image of the That's On Me, I Set the Bar Too Low meme. Text is: I'm a Bioinformation. Ok, name me 10 slightly different file formats! GFF. That's on me, I set the bar too low."/>
+
+<font size ="3">Meme credit: \@BioMickWatson (Twitter)</font>
+
+## GFF3
+
 * General Feature Format (GFF) files are used to describe features of sequences.
 * GFF3 is now the standard - GFF2 is depreciated.
-* GFF3 files contain 9 tab-delimited columns.
 * Gene Transfer Format (GTF) files are similar to GFF3 
+* GFF3 files contain 9 tab-delimited columns.
+
 
 ```{bash, eval = FALSE}
 seqid   source   type   start   end   score   strand   phase   attributes
@@ -332,10 +428,10 @@ The first line is a comment that defines the version.
 
 <font size ="3">[@gff3]</font>
 
-## GFF3/GTF files in Ribo-seq
+## GFF3 files in Ribo-seq
 
 <div style="float: right; width: 25%;">
-```{r,echo=FALSE, fig.width=3.5}
+```{r,echo=FALSE, fig.width=3.5,fig.alt="A flow chart for a general ribo-seq analysis workflow. The flow is as follows: Raw data - Adapter Removal - Quality Check - Contaminant removal - Quality Filter Alignment - Assess Ribosome Profiling Quality - Translation analysis."}
 
 grViz("digraph flowchart {
       node [fontname = Helvetica, shape = rectangle, fontsize=18]        
@@ -356,10 +452,10 @@ grViz("digraph flowchart {
 ```
 </div>
 
-## GFF3/GTF files in Ribo-seq
+## GFF3 files in Ribo-seq
 
 <div style="float: right; width: 25%;">
-```{r,echo=FALSE, fig.width=3.5}
+```{r,echo=FALSE, fig.width=3.5,fig.alt="A flow chart for a general ribo-seq analysis workflow. The flow is as follows: Raw data - Adapter Removal - Quality Check - Contaminant removal - Quality Filter Alignment - Assess Ribosome Profiling Quality - Translation analysis. The alignment and translation analysis steps are highlighted to show that they require GFF3 files."}
 
 grViz("digraph flowchart {
       node [fontname = Helvetica, shape = rectangle, fontsize=18]        
@@ -387,11 +483,12 @@ grViz("digraph flowchart {
 * 1-based - numbers nucleotides directly.
 * 0-based - numbers between nucleotides.
 
-<img src="images/Bases_figure.jpg" height="250px"/>
+<img src="images/Bases_figure.jpg" height="250px" alt="Image illustrating 0-based and 1-based numbering against an example sequence from chr1. The sequence is ATGTTAC."/>
+
 
 ## Coordinate systems
 
-<img src="images/Bases_figure.jpg" height="250px"/>
+<img src="images/Bases_figure.jpg" height="250px" alt="Image illustrating 0-based and 1-based numbering against an example sequence from chr1. The sequence is ATGTTAC."/>
 
     Seq       1-based     0-based      
 ----------  ----------  ----------
@@ -537,9 +634,13 @@ Format -
 Examples: 
 
 * AS:i:score = Alignment score generated by aligner.
-* H0:i:count Number of perfect hits.
+* H0:i:count = Number of perfect hits.
 
 <font size ="3">[@samtag]</font>
+
+<div class="notes">
+TAG type i - interger. A character.
+</div>
 
 ## SAM - Alignment section
 
@@ -561,10 +662,23 @@ AS:i:-1	XN:i:0	XM:i:1	XO:i:0	XG:i:0	NM:i:1	MD:Z:5G23	YT:Z:UU
 * Not human readable, but much smaller files.
 * .bai - index as in .fai
 
+## Samtools
+
+* Convert SAM to BAM
+* Sort BAM file
+* Index BAM file
+* View BAM file
+
+```{bash, eval = FALSE}
+samtools view sample.sorted.bam | head -n 5
+```
+
+<font size ="3">[@samtools;@samtools_paper]</font>
+
 ## BAM/SAM files in Ribo-seq
 
 <div style="float: right; width: 25%;">
-```{r,echo=FALSE, fig.width=3.5}
+```{r,echo=FALSE, fig.width=3.5,fig.alt="A flow chart for a general ribo-seq analysis workflow. The flow is as follows: Raw data - Adapter Removal - Quality Check - Contaminant removal - Quality Filter Alignment - Assess Ribosome Profiling Quality - Translation analysis."}
 
 grViz("digraph flowchart {
       node [fontname = Helvetica, shape = rectangle, fontsize=18]        
@@ -593,7 +707,7 @@ Unsorted SAM file from aligner, convert to BAM, sort and index for downstream st
 </div>
 
 <div style="float: right; width: 25%;">
-```{r,echo=FALSE, fig.width=3.5}
+```{r,echo=FALSE, fig.width=3.5,fig.alt="A flow chart for a general ribo-seq analysis workflow. The flow is as follows: Raw data - Adapter Removal - Quality Check - Contaminant removal - Quality Filter Alignment - Assess Ribosome Profiling Quality - Translation analysis. The contaminant removal, alignment, assess ribosome profiling quality, and translation analysis steps are highlighted to show that they require BAM or SAM files."}
 
 grViz("digraph flowchart {
       node [fontname = Helvetica, shape = rectangle, fontsize=18]      
@@ -621,7 +735,7 @@ grViz("digraph flowchart {
 * BED files allow users to define how annotation tracks are displayed
 * Upto 12 tab-delimited columns, only the first 3 are required.
 
-<img src="images/data_track.png" height="200px"/>
+<img src="images/data_track.png" height="200px" alt="Screenshot of a genome browser, showing an example of a bed file being visualised."/>
 
 ```{bash, eval = FALSE}
 chrom chromStart chromEnd name score strand thickStart thickEnd itemRgb blockCount 
@@ -674,7 +788,7 @@ chr7  127480532  127481699  Neg4  0  -  127480532  127481699  0,0,255
 ## BED files in ribo-seq
 
 <div style="float: right; width: 25%;">
-```{r,echo=FALSE, fig.width=3.5}
+```{r,echo=FALSE, fig.width=3.5,fig.alt="A flow chart for a general ribo-seq analysis workflow. The flow is as follows: Raw data - Adapter Removal - Quality Check - Contaminant removal - Quality Filter Alignment - Assess Ribosome Profiling Quality - Translation analysis."}
 
 grViz("digraph flowchart {
       node [fontname = Helvetica, shape = rectangle, fontsize=18]        
@@ -698,11 +812,11 @@ grViz("digraph flowchart {
 ## BED files in ribo-seq
 
 <div style="float: left; width: 75%;">
-<img src="images/data_track.png" height="150px"/>
+<img src="images/data_track.png" height="170px" alt="Screenshot of a genome browser, showing an example of a bed file being visualised."/>
 </div>
 
 <div style="float: right; width: 25%;">
-```{r,echo=FALSE, fig.width=3.5}
+```{r,echo=FALSE, fig.width=3.5,fig.alt="A flow chart for a general ribo-seq analysis workflow. The flow is as follows: Raw data - Adapter Removal - Quality Check - Contaminant removal - Quality Filter Alignment - Assess Ribosome Profiling Quality - Translation analysis. The translation analysis step is highlighted to show that it requires BED files."}
 
 grViz("digraph flowchart {
       node [fontname = Helvetica, shape = rectangle, fontsize=18]        
